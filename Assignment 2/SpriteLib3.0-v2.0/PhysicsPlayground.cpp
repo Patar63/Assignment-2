@@ -170,7 +170,7 @@ void PhysicsPlayground::Update()
 }
 static bool leap = false;
 static int speedDelay = 0;
-static float HorizVelMod = 0.0, gravity = -4.0, PlayerVertVel = 0.0,runMode=1.0;
+static float HorizVelMod = 0.0, gravity = -10.0, PlayerVertVel = 0.0,runMode=1.0;
 void PhysicsPlayground::KeyboardHold()
 {
 	auto& player = ECS::GetComponent<PhysicsBody>(MainEntities::MainPlayer());
@@ -186,20 +186,20 @@ void PhysicsPlayground::KeyboardHold()
 
 		if (Input::GetKey(Key::A))
 		{
-			if ((sprint == true)&&(HorizVelMod >-3.0)) {
-				HorizVelMod -= 0.01;
-				if (HorizVelMod > -2.0) {
-				HorizVelMod -= 0.02;
+			if ((sprint == true)&&(HorizVelMod >-6.0)) {
+				HorizVelMod -= 0.04;
+				if (HorizVelMod > -4.0) {
+				HorizVelMod -= 0.08;
 				}
 		}
-		else if ((sprint != true) && (HorizVelMod < -2.0)) { HorizVelMod += 0.01; }
-			if (HorizVelMod > -2.0) {
-			HorizVelMod -= 0.01;
+		else if ((sprint != true) && (HorizVelMod < -4.0)) { HorizVelMod += 0.04; }
+			if (HorizVelMod > -4.0) {
+			HorizVelMod -= 0.04;
 			}
 		}
 		else if (Input::GetKey(Key::D) == false) {
 			if (HorizVelMod < 0) {
-			HorizVelMod += 0.01;
+			HorizVelMod += 0.04;
 			}
 		}
 
@@ -207,77 +207,33 @@ void PhysicsPlayground::KeyboardHold()
 
 		if (Input::GetKey(Key::D))
 		{
-		if ((sprint == true) && (HorizVelMod <3.0)) {
-			HorizVelMod += 0.01;
-			if (HorizVelMod < 2.0) {
-				HorizVelMod += 0.02;
+		if ((sprint == true) && (HorizVelMod <6.0)) {
+			HorizVelMod += 0.04;
+			if (HorizVelMod < 4.0) {
+				HorizVelMod += 0.08;
 			}
 		}
-		else if ((sprint!=true)&&(HorizVelMod >2.0)){ HorizVelMod -= 0.01; }
-			if (HorizVelMod < 2.0) {
-			HorizVelMod += 0.01;
+		else if ((sprint!=true)&&(HorizVelMod >4.0)){ HorizVelMod -= 0.04; }
+			if (HorizVelMod < 4.0) {
+			HorizVelMod += 0.04;
 			}
-		}
-		else if (Input::GetKey(Key::A) == false) {
-			if (HorizVelMod > 0) {
-			HorizVelMod -= 0.01;
-			}
-		}
-	}
-	if (runMode == -1.0) {
-		if (Input::GetKey(Key::D))
-		{
-			if (HorizVelMod < 1.0) {
-				HorizVelMod += (1.0 - HorizVelMod) / 8;
-			}
-			if ((HorizVelMod > 0.999999)&&(speedDelay!=25)) {
-				speedDelay++;
-				if (speedDelay == 25) {
-					HorizVelMod += 0.00001;
-				}
-			}
-			if ((HorizVelMod > 1.0)&&(HorizVelMod<2.0)) {
-				HorizVelMod += (HorizVelMod-1) / 8;
-			}			
 		}
 		else if (Input::GetKey(Key::A) == false) {
 			if (HorizVelMod > 0) {
-				HorizVelMod -= 0.01;
-				speedDelay = 0;
-			}
-		}
-		if (Input::GetKey(Key::A))
-		{
-			
-			if (HorizVelMod >-1.0) {
-				HorizVelMod += (-1.0 - HorizVelMod) / 8;
-			}
-			if ((HorizVelMod < -0.999999) && (speedDelay != 25)) {
-				speedDelay++;
-				if (speedDelay == 25) {
-					HorizVelMod -= 0.00001;
-				}
-			}
-			if ((HorizVelMod < -1.0) && (HorizVelMod > -2.0)) {
-				HorizVelMod -= (-1.0-HorizVelMod ) / 8;
-			}
-		}
-		else if (Input::GetKey(Key::D) == false) {
-			if (HorizVelMod <0) {
-				HorizVelMod += 0.01;
-					speedDelay = 0;				
+			HorizVelMod -= 0.04;
 			}
 		}
 	}
+
 	std::cout << speedDelay <<" ";
 	std::cout << HorizVelMod << std::endl;
 	//code is static so that it doesn't reset every frame, stopping the jump you 
 	//adjusts vertical velocity while in the jump 
 	//resets jump once touching ground 
 	if (leap == true) {
-		PlayerVertVel += gravity / 50;
+		PlayerVertVel += gravity/15 ;
 	}
-	if ((PlayerVertVel < -18) && (leap == true)) {
+	if ((PlayerVertVel < -50) && (leap == true)) {
 		leap = false;
 		PlayerVertVel = 0.0;
 	}
@@ -292,7 +248,7 @@ void PhysicsPlayground::KeyboardDown()
 	if (((Input::GetKey(Key::W)) && (leap == false)) || (Input::GetKey(Key::Space))&&(leap==false))
 	{
 		leap = true;
-		PlayerVertVel = 25.f;
+		PlayerVertVel = 70.f;
 	}
 	if (Input::GetKey(Key::M)) {
 		runMode *= -1;
