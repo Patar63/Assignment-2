@@ -45,9 +45,6 @@
     <ClInclude Include="AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BackEnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BloomEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -172,6 +169,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsPlayground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BackEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsPlaygroundListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DestroyTrigger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CanJump.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -324,6 +336,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhysicsPlayground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsPlaygroundListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DestroyTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CanJump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "PhysicsPlaygroundListener.h"
 
 class PhysicsPlayground : public Scene
 {
@@ -17,5 +18,7 @@ public:
 	void KeyboardUp() override;
 
 protected:
+	PhysicsPlaygroundListener listener;
 
+	int ball = 0;
 };

@@ -5,7 +5,6 @@
 
 #define TOPDOWN
 
-
 enum AnimEnums
 {
 	IDLELEFT,

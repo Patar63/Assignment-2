@@ -12,22 +12,21 @@ enum class BodyType
 {
 	BOX,
 	CIRCLE,
+	TRIANGLE,
 
 	NUM_TYPES
 };
 
-struct CollisionIDs
+enum EntityCategories
 {
-public:
-	//Gets the different IDs
-	static unsigned int Player();
-	static unsigned int Environment();
-	static unsigned int Enemy();
-private:
-	//Holds the different IDs
-	static unsigned int m_playerID;
-	static unsigned int m_environmentID;
-	static unsigned int m_enemyID;
+	ENVIRONMENT = 0x0001,
+	GROUND		= 0x0002,
+	OBJECTS		= 0x0003,
+	PLAYER		= 0x0004,
+	FRIENDLY	= 0x0005,
+	ENEMY		= 0x0006,
+	PICKUP		= 0x0007,
+	TRIGGER		= 0x0008
 };
 
 
@@ -36,115 +35,121 @@ class PhysicsBody
 public:
 	PhysicsBody() { };
 	//Constructs a circle collider
-	PhysicsBody(b2Body* body, float radius, vec2 centerOffset, bool isDynamic);
+	PhysicsBody(int entity, b2Body* body, float radius, vec2 centerOffset, bool sensor, EntityCategories category, int collidesWith, float friction=1.f, float density=1.f);
 	//Constructs a box collider
-	PhysicsBody(b2Body* body, float width, float height, vec2 centerOffset, bool isDynamic);
+	PhysicsBody(int entity, b2Body* body, float width, float height, vec2 centerOffset, bool sensor, EntityCategories category, int collidesWith, float friction=1.f, float density=1.f);
+	//Constructs a polygon collider
+	PhysicsBody(int entity, BodyType bodyType, b2Body* body, std::vector<b2Vec2> points, vec2 centerOffset, bool sensor, EntityCategories category, int collidesWith, float friction=1.f, float density=1.f);
 
+	//Delete the physics body
 	void DeleteBody();
-
-	//Initializes body for drawing
-	void InitBody();
-
-	//Depreciated
-	void DrawBody();
 
 	//Update physics stuffs
 	void Update(Transform* trans);
-
 	//Apply a force to the physics body
 	void ApplyForce(vec3 force);
 
-	//Getters
+
+	//Getters//
 	//Get the Box2D physics body
 	b2Body* GetBody() const;
+	//Get the body type enum
+	BodyType GetBodyType() const;
+
+
+	//Set the mass of the phyics body
+	float GetMass() const;
 	//Get position of body
 	b2Vec2 GetPosition() const;
 	//Gets the current velocity
 	vec3 GetVelocity() const;
+	//Gets the gravity scale of the physics body
+	float GetGravityScale() const;
+	//Gets the debug color
+	vec4 GetColor() const;
+	
 
-	//Set the mass of the phyics body
-	float GetMass() const;
-
-	//Get the body type enum
-	BodyType GetBodyType() const;
-	//Gets the center offset for the body
-	//*if the offset is 0,0, then all corners will be relative to the
-	//center of the actual sprite
-	vec2 GetCenterOffset() const;
-	//Gets the corners of the body
-	vec2 GetBottomLeft() const;
-	vec2 GetBottomRight() const;
-	vec2 GetTopLeft() const;
-	vec2 GetTopRight() const;
 	//Gets the width of the physics body
 	float GetWidth() const;
 	//Gets the height of the physics body
 	float GetHeight() const;
 	//Gets the radius of the physics body
-	float GetRadius() const;
+	float GetRadius(int fixture) const;
+	//Gets the center offset for the body
+	//*if the offset is 0,0, then all corners will be relative to the
+	//center of the actual sprite
+	vec2 GetCenterOffset() const;
+
+	//Get the rotation angle (radians) of the body
+	float GetRotationAngleDeg() const;
+	//Get whether the body has a fixed rotation
+	bool GetFixedRotation() const;
 
 	//Get whether or not we are currently drawing our physics bodies
 	static bool GetDraw();
 
-	//Setters
+
+	//Setters//
 	//Sets the pointer to the box2D body
 	void SetBody(b2Body* body);
+	//If other body types were ever implemented we could set it here 
+	//(obviously different types wouldn't use the whole BL, BR, TL, TR
+	void SetBodyType(BodyType type);
+
+
 	//Set position (just sets the variable, doesn't actually set the position)
 	void SetPosition(b2Vec2 bodyPos);
 	//Sets the velocity of the phyiscs body
 	void SetVelocity(vec3 velo);
+	//Sets the gravity scale of the physics body
+	void SetGravityScale(float gravSc);
+	//Set the color of the debug draw
+	void SetColor(vec4 col);
+
 
 	//Set the mass of the physics body
 	void SetMass(float mass);
 
-	//If other body types were ever implemented we could set it here 
-	//(obviously different types wouldn't use the whole BL, BR, TL, TR
-	void SetBodyType(BodyType type);
+	//Set the scaled width
+	void ScaleBody(float scale, int fixture);
 	//Sets the center offset for the body
 	//*if the offset is 0,0, then all corners will be relative to the
 	//center of the actual sprite	void SetCenterOffset(vec2 cent);
 	void SetCenterOffset(vec2 cent);
-	//Sets the corners of the body
-	void SetBottomLeft(vec2 BL);
-	void SetBottomRight(vec2 BR);
-	void SetTopLeft(vec2 TL);
-	void SetTopRight(vec2 TR);
-	//Sets the width of the body
-	void SetWidth(float width);
-	//Sets the height of the body
-	void SetHeight(float height);
-	//Sets the radius of the body
-	void SetRadius(float radius);
+
+	//Set the rotation angle
+	void SetRotationAngleDeg(float degrees);
+	//Set whether the body has a fixed rotation
+	void SetFixedRotation(bool fixed);
+
+	void SetCategoryBit(EntityCategories category, int fixture=0);
+	void SetCollisionBit(EntityCategories collision, int fixture=0);
+
 	//Set whether the bodies are being drawn
 	static void SetDraw(bool drawBodies);
 
+	static std::vector<int> m_bodiesToDelete;
 private:
 	//The actual box2D body
 	b2Body* m_body = nullptr;
-	b2Vec2 m_position = b2Vec2(0.f, 0.f);
-
-	//Stores the velocity
-	vec3 m_velocity = vec3(0.f, 0.f, 0.f);
-
 	//Body type
-	BodyType m_bodyType = BodyType::CIRCLE;
+	BodyType m_bodyType = BodyType::BOX;
+
+
+	//Box2D position
+	b2Vec2 m_position = b2Vec2(0.f, 0.f);
+	//Color of the debug draw body
+	vec4 m_color = vec4(1.f, 0.f, 0.f, 0.3f);
+
+	bool m_fixedRotation = false;
+
 	//How far from the center of the sprite is it
 	vec2 m_centerOffset = vec2();
-	//Each corner
-	vec2 m_bottomLeft = vec2();
-	vec2 m_bottomRight = vec2();
-	vec2 m_topLeft = vec2();
-	vec2 m_topRight = vec2();
 	//Width and height of the body
 	float m_width = 0.f;
 	float m_height = 0.f;
-
-	float m_radius = 0.f;
 	
+
 	//Do you draw the bodies?
 	static bool m_drawBodies;
-
-	//Physics body drawing stuff
-	GLuint m_vao = GL_NONE;
-	GLuint m_vboPos = GL_NONE;
 };
